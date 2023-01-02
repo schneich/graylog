@@ -20,6 +20,24 @@ ifconfig eth1 promisc
 ```
 Make sure to set the right network name. (My network is called _eno1_.)
 
+### prepare VLANs in docker
+Later on, I will reference the VLAN in the compose.yaml. This will tell the container to use that network. The following command basically creates a docker-specific DHCP for that VLAN. Make sure that you do not get dublicate IPs in your network!
+
+```
+# Server-Netz (VLAN 70)
+docker network create -d macvlan \
+    --subnet=192.168.70.0/24 \
+	--ip-range=192.168.70.127/26 \
+    --gateway=192.168.70.1 \
+	--aux-address="Ubuntu-Docker-Server=192.168.70.2" \
+    -o parent=eno1.70 macvlan70
+```
+Docker manual on Macvlan networks [802.1q trunk bridge mode](https://docs.docker.com/network/macvlan/)
+:warning: A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.
+:warning: there is the option to use ipvlans as well. The image within the documentation looked like what I wanted, but I never got it running properly.
+![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)
+
+
 ### 802.1q trunk switch port
 My server is wired to a switch. Because I am using different VLANs, the switch port has to be configured, so that the respective traffic can be received on that switch port. In Unifi, this is done like this: [A non-expert Guide to VLAN and Trunks in Unifi Switches](https://community.ui.com/questions/A-non-expert-Guide-to-VLAN-and-Trunks-in-Unifi-Switches/7462245c-95a7-455e-a711-209f44e194cb)
 * create a _switch port profile_
@@ -69,10 +87,54 @@ sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/mongo_data
 
 
 ## Docker compose file
-I found many different versions of the docker compose file for graylog. Mine is based on the official documentation: [Persisting Data](https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/docker_installation.htm#PersistingData). _Version 2_ is rather outdated, so I went over the official [docker _Compose specification_](https://docs.docker.com/compose/compose-file/) and adopted it to the newest version (as of december 2022).
-In the following, I will highlight one or to points, to fully understand the file, I recommend to have a closer look at the specification.
+I found many different versions of the docker compose file for graylog. Mine is based on the official documentation: [Persisting Data](https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/docker_installation.htm#PersistingData). _Version 2_ is rather outdated, so I went over the official docker [_Compose specification_](https://docs.docker.com/compose/compose-file/) and adopted it to the newest version (as of december 2022).
+In the following, I will highlight one or two points. To fully understand the file, I recommend to have a closer look at the specifications of Docker and Graylog.
 
 And here it is, my [**compose.yaml**](compose.yaml).
+
+### restart
+There is an option, where you can define, in what cases docker should performe a restart of a container.
+```
+    ...
+    restart: unless-stopped
+    ...
+```
+Docker compose specification on [restart](https://docs.docker.com/compose/compose-file/#restart)
+
+### volumes
+There is a big difference between _volumes_ and _binds_ - to be honest, I did not fully understand. _binds_ are folders sitting somewhere on your host, that can be mapped into your docker container. Volumes are sitting at /var/lib/docker/volumes/ on your host and can only be accessed with sudo-rights. Volumes can be managed via docker (e.g. delete all un-used volumes), where as binds can be put into a path of your liking. What is better? Well, I don't no. If you need to frequently access those files to do some configuration, use a bind like this:
+
+```
+    volumes:
+      - /home/uadmin/Docker/Graylog/mongo_data:/data/db
+      
+      
+volumes:
+  mongo_data:
+    driver: local
+  es_data:
+    driver: local
+  graylog_data:
+    driver: local
+    
+```
+Docker compose specification on [volumes](https://docs.docker.com/compose/compose-file/#volumes)
+Docker compose specification on [Volumes top-level element](https://docs.docker.com/compose/compose-file/#volumes-top-level-element)
+
+
+### networks
+I defined two networks. One is the 
+```
+  graylog:
+    ...
+    networks:
+      macvlan70:
+        ipv4_address: 192.168.70.3
+      graylog_backend:
+        ipv4_address: 10.10.10.2
+    ...
+```
+
 
 
 
