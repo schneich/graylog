@@ -2,7 +2,8 @@
 How to get Graylog running in your home using Docker
 
 
-I have spend several nights in trying to get Graylog running at home. There are a lot of manuals out there, some very basic, some slightly outdated. So here is the summary on how I did it.
+I have spend several nights in trying to get Graylog running at home. There are a lot of manuals out there, some very basic, some slightly outdated. I got a lot of help from the Graylog-Community-Forum and the Docker-Community-Forum. Most of the following inputs are based on their knowledge and advise.
+So here is the summary on how I did it.
 
 
 ## Background
@@ -27,5 +28,17 @@ My server is wired to a switch. Because I am using different VLANs, the switch p
 ![Unifi_switchport](Unifi_switchport.png)
 
 :warning: Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: [How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))
+
+### Folders for persisting data
+To be able to persist data, you need to create some folders and set the needed permissions.
+#### create user _graylog_ with id _1100_
+When you start your graylog container in docker, it will be using a user _graylog_ with id _1100_. You have to create this user in your ubuntu.
+
+```
+sudo useradd -u 1100 graylog
+```
+
+#### create _graylog_data_
+Create a folder with the name _graylog\_data_ 
 
 
