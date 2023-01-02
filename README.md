@@ -33,7 +33,9 @@ docker network create -d macvlan \
     -o parent=eno1.70 macvlan70
 ```
 Docker manual on Macvlan networks [802.1q trunk bridge mode](https://docs.docker.com/network/macvlan/)
+
 :warning: A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.
+
 :warning: there is the option to use ipvlans as well. The image within the documentation looked like what I wanted, but I never got it running properly.
 ![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)
 
