@@ -1,0 +1,109 @@
+# version: as December 2022 https://docs.docker.com/compose/compose-file/
+
+services:
+# MongoDB: https://hub.docker.com/_/mongo/
+  mongodb:
+    image: mongo:5.0.13
+    restart: unless-stopped
+  #DB in share for persistence
+    volumes:
+      - /home/uadmin/Docker/Graylog/mongo_data:/data/db
+    networks:
+      graylog_backend:
+        ipv4_address: 10.10.10.3
+
+
+# Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/7.10/docker.html
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    #data folder in share for persistence
+    volumes:
+      - /home/uadmin/Docker/Graylog/es_data:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TZ=Europe/Zurich
+    deploy:
+      resources:
+         limits:
+            memory: 1gb
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: unless-stopped
+    networks:
+      graylog_backend:
+        ipv4_address: 10.10.10.4
+
+
+# Graylog: https://hub.docker.com/r/graylog/graylog/
+  graylog:
+    image: graylog/graylog:5.0
+    #journal and config directories in local NFS share for persistence
+    volumes:
+     -  /home/uadmin/Docker/Graylog/graylog_data:/usr/share/graylog/data
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET=[abcd]
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=[efgh]
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://192.168.70.3:9000/
+      - GRAYLOG_HTTP_ENABLE_CORS=true
+      - TZ=Europe/Zurich
+    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+    networks:
+      macvlan70:
+        ipv4_address: 192.168.70.3
+      graylog_backend:
+        ipv4_address: 10.10.10.2
+    links:
+      - mongodb:mongo
+      - elasticsearch
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - elasticsearch
+    ports:
+      #Graylog Web Frontend
+      - target: 9000
+        host_ip: 0.0.0.0
+        published: 9000
+        mode: host
+      #Syslog (e.g. Unifi)
+      - target: 1514
+        host_ip: 0.0.0.0
+        published: 1514
+        mode: host
+      #Syslog (e.g. Tasmota)
+      - target: 1515
+        host_ip: 0.0.0.0
+        published: 1515
+      - target: 12201
+        host_ip: 0.0.0.0
+        published: 12201
+        mode: host 
+
+
+# Volumes for persisting data, see https://docs.docker.com/engine/admin/volumes/volumes/
+volumes:
+  mongo_data:
+    driver: local
+  es_data:
+    driver: local
+  graylog_data:
+    driver: local
+
+
+# Network specifications
+networks:
+  macvlan70:
+    external: true
+  graylog_backend:
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.10.0/24"
