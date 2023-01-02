@@ -82,6 +82,11 @@ As my server is running in my own network, the server itself has very limited ac
 sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/graylog_data
 ```
 
+might work as well:
+```
+chown -R 1100:1100 /home/uadmin/Docker/Graylog/graylog_data
+```
+
 
 
 #### create _es\_data_
