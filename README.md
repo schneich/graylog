@@ -31,6 +31,7 @@ My server is wired to a switch. Because I am using different VLANs, the switch p
 
 ### Folders for persisting data
 To be able to persist data, you need to create some folders and set the needed permissions.
+
 #### create user _graylog_ with id _1100_
 When you start your graylog container in docker, it will be using a user _graylog_ with id _1100_. You have to create this user in your ubuntu.
 
@@ -39,6 +40,32 @@ sudo useradd -u 1100 graylog
 ```
 
 #### create _graylog_data_
-Create a folder with the name _graylog\_data_ 
+Create a folder with the name _graylog\_data_. Do this in a path with easy access. I have chosen this one:
+```
+mkdir /home/uadmin/Docker/Graylog/graylog_data
+```
+As my server is running in my own network, the server itself has very limited access to the internet, I gave access to all users:
+```
+sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/graylog_data
+```
+
+#### create _es\_data_
+Elasticsearch needs a folder as well to persist data.
+```
+mkdir /home/uadmin/Docker/Graylog/es_data
+```
+Change access rights:
+```
+sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/es_data
+```
+
+#### create _mongo\_data_
+```
+mkdir /home/uadmin/Docker/Graylog/mongo_data
+```
+```
+sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/mongo_data
+```
+
 
 
