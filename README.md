@@ -228,3 +228,51 @@ echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut
 Docker compose specification on [environment](https://docs.docker.com/compose/compose-file/#environment)
 
 
+## Installation
+Go into the directory, where you have put your compose.yaml and start your container with
+```
+docker compose up -d
+```
+This will start your 3 containers and you should be able to access Graylog via your defined IP.
+
+
+
+## helpfull docker commands
+This are my favorite docker commands.
+
+Show **all** your docker containers
+```
+docker ps -a
+```
+
+If something does not work, have a quick look at the logs of your container.
+```
+docker logs [ID or name of your container]
+```
+
+Inspect your containers definitions. Sometimes it is very helpful to see, what has been defined.
+```
+docker inspect [ID or name of your container]
+```
+
+See a list of defined networks
+```
+docker network ls
+```
+
+:warning: It is possible to remove all unused networks or volumes. Think, before doing these ones. No, realy, do think about it!
+```
+docker network prune
+docker volume prune
+```
+
+some more
+```
+docker container stop [ID or name of your container(s)]
+docker container start [ID or name of your container(s)]
+docker container rm -f [ID or name of your container(s)]     <--- -f = force removal
+```
+
+
+
+
