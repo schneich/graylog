@@ -68,4 +68,13 @@ sudo chmod -R a+rwx /home/uadmin/Docker/Graylog/mongo_data
 ```
 
 
+## Docker compose file
+I found many different versions of the docker compose file for graylog. Mine is based on the official documentation: [Persisting Data](https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/docker_installation.htm#PersistingData). _Version 2_ is rather outdated, so I went over the official [docker _Compose specification_](https://docs.docker.com/compose/compose-file/) and adopted it to the newest version (as of december 2022).
+In the following, I will highlight one or to points, to fully understand the file, I recommend to have a closer look at the specification.
+
+And here it is, my **compose.yaml**.
+```
+
+```
+
 
