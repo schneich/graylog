@@ -22,7 +22,7 @@ Make sure to set the right network name. (My network is called _eno1_.)
 ### 802.1q trunk switch port
 My server is wired to a switch. Because I am using different VLANs, the switch port has to be configured, so that the respective traffic can be received on that switch port. In Unifi, this is done like this: [A non-expert Guide to VLAN and Trunks in Unifi Switches](https://community.ui.com/questions/A-non-expert-Guide-to-VLAN-and-Trunks-in-Unifi-Switches/7462245c-95a7-455e-a711-209f44e194cb)
 * create a _switch port profile_
-![Unifi_switchportprofile](Unifi_switchport.png)
+![Unifi_switchportprofile](Unifi_switchportprofile.png)
 * apply profile to switch port
 ![Unifi_switchport](Unifi_switchport.png)
 
