@@ -41,7 +41,7 @@ Docker manual on Macvlan networks [802.1q trunk bridge mode](https://docs.docker
 
 :warning: `A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.`
 
-:warning: `there is the option to use [IPvlan 802.1q trunk L2 mode](https://docs.docker.com/network/ipvlan/#ipvlan-8021q-trunk-l2-mode-example-usage) as well. The image within the documentation looked like what I wanted, but I never got it running properly.`
+:warning: `there is the option to use `[IPvlan 802.1q trunk L2 mode](https://docs.docker.com/network/ipvlan/#ipvlan-8021q-trunk-l2-mode-example-usage)` as well. The image within the documentation looked like what I wanted, but I never got it running properly.`
 
 ![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)
 
@@ -54,7 +54,7 @@ My server is wired to a switch. Because I am using different VLANs, the switch p
 * apply profile to switch port
 ![Unifi_switchport](/images/Unifi_switchport.png)
 
-:warning: `Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: [How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))`
+:warning: `Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: `[How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))
 
 
 
