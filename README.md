@@ -26,3 +26,6 @@ My server is wired to a switch. Because I am using different VLANs, the switch p
 * apply profile to switch port
 ![Unifi_switchport](Unifi_switchport.png)
 
+:warning: Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: [How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))
+
+
