@@ -34,11 +34,11 @@ docker network create -d macvlan \
 ```
 Docker manual on Macvlan networks [802.1q trunk bridge mode](https://docs.docker.com/network/macvlan/)
 
-`#acdbe8` :warning: A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.
+`:warning: A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.`
 
-:warning: there is the option to use [IPvlan 802.1q trunk L2 mode](https://docs.docker.com/network/ipvlan/#ipvlan-8021q-trunk-l2-mode-example-usage) as well. The image within the documentation looked like what I wanted, but I never got it running properly.
+`:warning: there is the option to use [IPvlan 802.1q trunk L2 mode](https://docs.docker.com/network/ipvlan/#ipvlan-8021q-trunk-l2-mode-example-usage) as well. The image within the documentation looked like what I wanted, but I never got it running properly.
 
-![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)
+![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)`
 
 
 ### 802.1q trunk switch port
@@ -48,7 +48,7 @@ My server is wired to a switch. Because I am using different VLANs, the switch p
 * apply profile to switch port
 ![Unifi_switchport](/images/Unifi_switchport.png)
 
-:warning: Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: [How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))
+`:warning: Please note: I want to have my server and some of the Docker containers in the same VLAN. Unfortunately, I was not able to get this working. (Still open discussion in Docker forum: [How to set host and containes in same vlan](https://forums.docker.com/t/how-to-set-host-and-containes-in-same-vlan/133416))`
 
 ### Folders for persisting data
 To be able to persist data, you need to create some folders and set the needed permissions.
@@ -151,6 +151,10 @@ networks:
         - subnet: "10.10.10.0/24"
 	
 ```
+Docker [Networking overview](https://docs.docker.com/network/)
+Docker compose specificaton on [networks](https://docs.docker.com/compose/compose-file/#networks)
+Docker compose specificaiton on [Networks top-level element](https://docs.docker.com/compose/compose-file/#networks-top-level-element)
+
 
 ### memory and limits
 There is an option to limit the resources, the container will draw from your host. I tock over the default values from the graylog-documentation, but got some warnings from the Docker community. For more details read the post from [meyay](https://forums.docker.com/t/ipvlan-or-macvlan-in-docker-compose-yml/133137/14).
@@ -165,6 +169,8 @@ There is an option to limit the resources, the container will draw from your hos
         soft: -1
         hard: -1
 ```
+Docker compose file deplay on [memory](https://docs.docker.com/compose/compose-file/deploy/#memory)
+
 
 ### environment settings
 Graylog allows to set a lot of environment variables. Read the docs: [Server.conf](https://go2docs.graylog.org/5-0/setting_up_graylog/server.conf.html).
@@ -190,7 +196,6 @@ An easy way to generate a SHA2 of a password is done via the linux comand line:
 echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
 ```
 
+Docker compose specification on [environment](https://docs.docker.com/compose/compose-file/#environment)
 
 
-
-    
