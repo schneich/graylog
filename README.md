@@ -36,7 +36,8 @@ Docker manual on Macvlan networks [802.1q trunk bridge mode](https://docs.docker
 
 :warning: A macvlan will make your container puplic to your network. You will see the container in your router, you will have to ristrict access by using your routers/firewalls means.
 
-:warning: there is the option to use ipvlans as well. The image within the documentation looked like what I wanted, but I never got it running properly.
+:warning: there is the option to use [IPvlan 802.1q trunk L2 mode](https://docs.docker.com/network/ipvlan/#ipvlan-8021q-trunk-l2-mode-example-usage) as well. The image within the documentation looked like what I wanted, but I never got it running properly.
+
 ![IPvlan 802.1q trunk L2 mode example usage](https://docs.docker.com/network/images/vlans-deeper-look.png)
 
 
@@ -125,7 +126,9 @@ Docker compose specification on [Volumes top-level element](https://docs.docker.
 
 
 ### networks
-I defined two networks. One is the 
+I defined two networks. One is the _macvlan70_. Graylog will get an IP address in that range and will be accessible over the network.
+The second network _graylog_backend_ is created via the compose.yaml and is only accessible from within docker. It is used for the communication between Graylog, Elasticsearch and Mongo.
+
 ```
   graylog:
     ...
@@ -135,8 +138,59 @@ I defined two networks. One is the
       graylog_backend:
         ipv4_address: 10.10.10.2
     ...
+    
+# Network specifications
+networks:
+  macvlan70:
+    external: true
+  graylog_backend:
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.10.0/24"
+	
+```
+
+### memory and limits
+There is an option to limit the resources, the container will draw from your host. I tock over the default values from the graylog-documentation, but got some warnings from the Docker community. For more details read the post from [meyay](https://forums.docker.com/t/ipvlan-or-macvlan-in-docker-compose-yml/133137/14).
+
+```
+    deploy:
+      resources:
+         limits:
+            memory: 1gb
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+```
+
+### environment settings
+Graylog allows to set a lot of environment variables. Read the docs: [Server.conf](https://go2docs.graylog.org/5-0/setting_up_graylog/server.conf.html).
+I took all the environment variables from the docker example and added the TimeZone.
+
+```
+    ...
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET=[abcd]
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=[efgh]
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://192.168.70.3:9000/
+      - GRAYLOG_HTTP_ENABLE_CORS=true
+      - TZ=Europe/Zurich
+    ...
+```
+
+You need to create a SHA2 for your admin-login. This will be needed to log into your Graylog.
+An easy way to generate a SHA2 of a password is done via the linux comand line:
+
+```
+echo -n "Enter Password: " && head -1 </dev/stdin | tr -d '\n' | sha256sum | cut -d" " -f1
 ```
 
 
 
 
+    
