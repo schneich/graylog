@@ -23,6 +23,7 @@ ifconfig eth1 promisc
 ```
 Make sure to set the right network name. (My network is called _eno1_.)
 
+If not working, try this: [Enable /etc/rc.local with systemd on Ubuntu 20.04](https://marsown.com/wordpress/how-to-enable-etc-rc-local-with-systemd-on-ubuntu-20-04/).
 
 
 ### prepare VLANs in docker
