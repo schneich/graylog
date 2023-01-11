@@ -272,6 +272,12 @@ docker network prune
 docker volume prune
 ```
 
+CPU usage of containers
+```
+docker stats
+```
+
+
 some more
 ```
 docker container stop [ID or name of your container(s)]
